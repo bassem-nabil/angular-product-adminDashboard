@@ -38,6 +38,9 @@ export class BreadcrumbComponent {
   filterNavigation(navItems: NavigationItem[], activeLink: string): TitleType[] {
     for (const navItem of navItems) {
       this.showProcutsLink = false;
+      if (activeLink === '/') {
+        activeLink = '/products';
+      }
       if (activeLink.startsWith('/products/edit')) {
         activeLink = '/products/edit';
         this.showProcutsLink = true;

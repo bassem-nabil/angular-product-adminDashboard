@@ -18,7 +18,7 @@ export class ProductsEffects {
       ofType(ProductsActions.load),
       mergeMap(({props}) =>
         this.productService.getProducts(props).pipe(
-          map(response => {debugger; 
+          map(response => {
             const totalCount = parseInt(response.headers.get('X-Total-Count')|| '0', 0);
             return ProductsActions.loadSuccess({ products: response.body, totalCount: totalCount}) }),
           catchError(err => of(ProductsActions.loadFailure({ error: String(err.message ?? err) })))

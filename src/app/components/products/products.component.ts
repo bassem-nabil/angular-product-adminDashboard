@@ -14,6 +14,7 @@ import { selectAll, selectTotalCount } from 'src/app/store/selectors/product.sel
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { HelperService } from 'src/app/services/helper.service';
 
 @Component({
   standalone: true,
@@ -37,6 +38,7 @@ export class ProductsComponent implements OnInit {
   modalService = inject(NgbModal);
   toastService = inject(ToastrService);
   store = inject(Store);
+  helperService = inject(HelperService);
 
   productsReachable: ProductModel[] = [];
   products$: Subscription = new Subscription();
@@ -47,7 +49,6 @@ export class ProductsComponent implements OnInit {
   searchText: string = '';
   currentPage: number = 1;
   totalCount: number = 0;
-  selectAll: boolean = false;
   productsPerPage: number = 5;
   showSkeletonLoader: boolean = true;
 
@@ -59,22 +60,6 @@ export class ProductsComponent implements OnInit {
   ngOnDestroy() {
     if (this.products$) {
       this.products$.unsubscribe();
-    }
-  }
-
-  checkUncheckAll() {
-    if (this.productsReachable && this.productsReachable.length > 0) {
-      this.productsReachable.map(c => {
-        c.checked = this.selectAll;
-      });
-    }
-  }
-
-  checkUncheckProduct(product: ProductModel) {
-    if (this.productsReachable.some(e => e.checked === true)) {
-      this.selectAll = false;
-    } else {
-      this.selectAll = true;
     }
   }
 
@@ -91,40 +76,23 @@ export class ProductsComponent implements OnInit {
     // this.loadProducts();
 
     
-    let filteredProducts = this.productsReachable;
+    let filteredProducts =  JSON.parse(JSON.stringify(this.productsReachable));
 
     if (this.selectedStatus !== 'All') {
-      filteredProducts = filteredProducts.filter(product => product.status === this.selectedStatus);
+      filteredProducts = filteredProducts.filter((product: any) => product.status === this.selectedStatus);
     }
 
     if (this.searchText) {
-      filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(this.searchText.toLowerCase()));
+      filteredProducts = filteredProducts.filter((product: any) => product.name.toLowerCase().includes(this.searchText.toLowerCase()));
     }
 
-    filteredProducts = this.dynamicSort(filteredProducts, sortField as keyof ProductModel, sortOrder);
+    filteredProducts = this.helperService.dynamicSort(filteredProducts, sortField as keyof ProductModel, sortOrder);
     this.productsReachable = filteredProducts;
 
   }
 
-  dynamicSort(products: ProductModel[], sortField: keyof ProductModel, sortOrder: string): ProductModel[] {
-    return products.sort((a, b) => {
-      let comparison = 0;
-
-      const aValue = a[sortField] ?? '';
-      const bValue = b[sortField] ?? '';
-
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        comparison = aValue - bValue;
-      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
-        comparison = aValue.localeCompare(bValue);
-      }
-
-      return sortOrder === 'asc' ? comparison : -comparison;
-    });
-  }
-
   subscribeToProducts() {
-    this.products$ = this.store.select(selectAll).subscribe(products => {debugger
+    this.products$ = this.store.select(selectAll).subscribe(products => {
       if (this.currentPage === 1) {
         const arr = JSON.parse(JSON.stringify(products));
         this.productsReachable = Object.values(arr);
@@ -137,7 +105,6 @@ export class ProductsComponent implements OnInit {
       this.productsReachable.map(c => {
         c.checked = false;
       });
-      this.selectAll = false;
       setTimeout(() => {
         this.showSkeletonLoader = false;
       }, 500);
@@ -200,6 +167,23 @@ export class ProductsComponent implements OnInit {
         console.log('Modal dismissed');
       }
     );
+  }
+
+  applyFilter() {
+    this.currentPage = 1;
+    this.showSkeletonLoader = true;
+    this.selectedSort = 'createdDate_desc';
+    this.loadProducts();
+  }
+
+  clearFilter() {
+    this.searchText = '';
+    this.selectedStatus = 'All';
+    this.currentPage = 1;
+    this.showSkeletonLoader = true;
+    this.selectedSort = 'createdDate_desc';
+    this.loadProducts();
+    
   }
 
 }

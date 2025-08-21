@@ -4,19 +4,19 @@
       <div class="row">
         <div class="col-md-4 mb-3">
           <div class="input-group">
-            <span class="input-group-text cursor-pointer" (click)="showSkeletonLoader = true;loadProducts()">
+            <span class="input-group-text cursor-pointer" (click)="applyFilter()">
               @if (searchText) {
-             <span (click)="searchText = '';loadProducts()" class="removeTxtSearch">X</span>
+             <span (click)="clearFilter()" class="removeTxtSearch">X</span>
               } @else {
               <i class="fa fa-search"></i>
               }
             </span>
-            <input type="text" [(ngModel)]="searchText" (input)="showSkeletonLoader = true;loadProducts()" placeholder="Search by Name"
+            <input type="text" [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Search by Name"
               class="form-control">
           </div>
         </div>
         <div class="col-md-2 mb-3">
-          <select [(ngModel)]="selectedStatus" (change)="currentPage = 1;loadProducts()" class="form-control mb-3">
+          <select [(ngModel)]="selectedStatus" (change)="applyFilter()" class="form-control mb-3">
             <option value="All">Select All Status</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
@@ -37,13 +37,12 @@
         </div>
       </div>
     </div>
-    <div class="table-responsive" infiniteScroll [infiniteScrollDistance]="0.8" [infiniteScrollUpDistance]="1"
+    <div class="table-responsive" infiniteScroll [scrollWindow]="false" [infiniteScrollDistance]="2" [infiniteScrollUpDistance]="150"
   (scrolled)="loadMoreProducts()">
       <table class="table table-hover">
         <thead>
           <tr>
             <th class="width-50">
-              <input type="checkbox" class="form-check-input" [(ngModel)]="selectAll" (change)="checkUncheckAll()" />
             </th>
             <th (click)="sortProducts('name')" class="cursor-pointer width-200"
               [ngClass]="{'sorted': selectedSort === 'name_asc' || selectedSort === 'name_desc'}">
@@ -119,8 +118,7 @@
           @for (product of productsReachable; track product) {
           <tr>
             <th>
-              <input type="checkbox" class="form-check-input" [(ngModel)]="product.checked"
-                (change)="checkUncheckProduct(product)" />
+              <input type="checkbox" class="form-check-input" [(ngModel)]="product.checked" />
             </th>
             <td>{{ product.name }}</td>
             <td>{{ product.description }}</td>
