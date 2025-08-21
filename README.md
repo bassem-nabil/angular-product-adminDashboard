@@ -1,12 +1,20 @@
 # AngularProductAdminDashboardV1
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
+```bash
+npm install -g json-server@0.17.4
+```
+
+```bash
+json-server --watch db.json --port 3000 
+```
 
 ## Development server
 
 To start a local development server, run:
 
 ```bash
+
 ng serve
 ```
 
