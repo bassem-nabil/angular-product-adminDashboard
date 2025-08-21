@@ -1,0 +1,47 @@
+.sorted {
+    background: #9eab931f;
+    border-radius: 5px;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.filter-icon-small {
+  font-size: xx-small;
+}
+.header-Container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.width-200 {
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
+}
+.width-50 {
+    width: 50px;
+    max-width: 50px;
+    min-width: 50px;
+}
+.width-100 {
+    width: 100px;
+    max-width: 100px;
+    min-width: 100px;
+}
+.custom-badge{
+    color: #000000;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 2px;
+    background: linear-gradient(3deg, #ffffff00, rgb(0 188 212 / 88%)) !important;
+}
+.removeTxtSearch {
+    font-weight: 900;
+}
+.img-fluidCustom {
+    height: 50px;
+}
+.table-responsive {
+  max-height: 400px !important; 
+  overflow-y: auto !important;
+}

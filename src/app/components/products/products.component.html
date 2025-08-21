@@ -1,0 +1,162 @@
+<div class="col-xl-12">
+  <app-card [options]="true" blockClass="table-border-style">
+    <div class="app-card-mainButtons">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <div class="input-group">
+            <span class="input-group-text cursor-pointer" (click)="showSkeletonLoader = true;loadProducts()">
+              @if (searchText) {
+             <span (click)="searchText = '';loadProducts()" class="removeTxtSearch">X</span>
+              } @else {
+              <i class="fa fa-search"></i>
+              }
+            </span>
+            <input type="text" [(ngModel)]="searchText" (input)="showSkeletonLoader = true;loadProducts()" placeholder="Search by Name"
+              class="form-control">
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <select [(ngModel)]="selectedStatus" (change)="currentPage = 1;loadProducts()" class="form-control mb-3">
+            <option value="All">Select All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="app-card-mainLeftButtons">
+      <div class="row">
+        <div>
+          <button type="button" class="btn btn-primary me-3" [routerLink]="['/products/add']">
+            <i class="fas fa-plus me-2"></i>
+            Add New Product
+          </button>
+          <button (click)="openDeleteConfirmation(null,true)" type="button" class="btn btn-danger" placement="top" ngbTooltip="Select Product or Products to delete">
+            <i class="fas fa-trash me-2"></i>
+            Delete</button>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive" infiniteScroll [infiniteScrollDistance]="0.8" [infiniteScrollUpDistance]="1"
+  (scrolled)="loadMoreProducts()">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="width-50">
+              <input type="checkbox" class="form-check-input" [(ngModel)]="selectAll" (change)="checkUncheckAll()" />
+            </th>
+            <th (click)="sortProducts('name')" class="cursor-pointer width-200"
+              [ngClass]="{'sorted': selectedSort === 'name_asc' || selectedSort === 'name_desc'}">
+              <div class="header-Container">
+                <div>
+                  Name
+                  @if (selectedSort === 'name_asc') {
+                    <i class="fas fa-sort-down"></i>
+                  }
+                  @if (selectedSort === 'name_desc') {
+                    <i class="fas fa-sort-up"></i>
+                  }
+                </div>
+                <div>
+                  <span class="badge bg-info custom-badge">sortable</span>
+                </div>
+              </div>
+            </th>
+            <th class=" width-200">Description</th>
+            <th (click)="sortProducts('price')" class="cursor-pointer width-200"
+              [ngClass]="{'sorted': selectedSort === 'price_asc' || selectedSort === 'price_desc'}">
+              <div class="header-Container">
+                <div>
+                  Price
+                  @if (selectedSort === 'price_asc') {
+                    <i class="fas fa-sort-down"></i>
+                  }
+                  @if (selectedSort === 'price_desc') {
+                    <i class="fas fa-sort-up"></i>
+                  }
+                </div>
+                <div>
+                  <span class="badge bg-info custom-badge">sortable</span>
+                </div>
+              </div>
+            </th>
+            <th (click)="sortProducts('stock')" class="cursor-pointer width-200"
+              [ngClass]="{'sorted': selectedSort === 'stock_asc' || selectedSort === 'stock_desc'}">
+              <div class="header-Container">
+                <div>
+                  Stock
+                  @if (selectedSort === 'stock_asc') {
+                    <i class="fas fa-sort-down"></i>
+                  }
+                  @if (selectedSort === 'stock_desc') {
+                    <i class="fas fa-sort-up"></i>
+                  }
+                </div>
+                <div>
+                  <span class="badge bg-info custom-badge">sortable</span>
+                </div>
+              </div>
+            </th>
+            <th class=" width-200">
+              Status
+              @if (selectedStatus !== 'All') {
+              <i class="fas fa-filter filter-icon-small"></i>
+              }
+            </th>
+            <th class=" width-200">Image</th>
+            <th></th>
+          </tr>
+        </thead>
+        @if (!showSkeletonLoader && (productsReachable && productsReachable.length === 0)) {
+          <tbody>
+            <tr>
+              <td colspan="8" class="text-center">No products found.</td>
+            </tr>
+          </tbody>
+        }
+        @if (!showSkeletonLoader && (productsReachable && productsReachable.length > 0)) {
+        <tbody>
+          @for (product of productsReachable; track product) {
+          <tr>
+            <th>
+              <input type="checkbox" class="form-check-input" [(ngModel)]="product.checked"
+                (change)="checkUncheckProduct(product)" />
+            </th>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.price | currency }}</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.status }}</td>
+            <td>
+              @if (product.image) {
+              <img [src]="product.image" alt="Product Image" class="img-fluidCustom"/>
+              }
+            </td>
+            <td>
+              <button type="button" class="btn btn-icon btn-danger d-inline-flex me-3" ngbTooltip="Delete Product"
+              (click)="openDeleteConfirmation(product,false)">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button type="button" class="btn btn-icon btn-info d-inline-flex" ngbTooltip="Edit Product"
+                [routerLink]="['/products/edit/', product.id]">
+                <i class="fas fa-pen"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+        }
+        @if (showSkeletonLoader) {
+        <tbody>
+          <tr>
+            <td colspan="8" class="text-center">
+              <ngx-skeleton-loader count="5" animation="progress-dark" [theme]="{height: '50px', marginBottom: '3px'}"></ngx-skeleton-loader>
+            </td>
+          </tr>
+        </tbody>
+        }
+      </table>
+    </div>
+  </app-card>
+</div>
+

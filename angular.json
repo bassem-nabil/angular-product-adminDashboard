@@ -17,11 +17,18 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+             "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": ["color-functions", "global-builtin", "import", "mixed-decls"]
+              }
+            },
+            "allowedCommonJsDependencies": ["bezier-easing", "mousetrap", "apexcharts"],
             "outputPath": "dist/angular-product-admin-dashboard-v1",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -29,12 +36,18 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              }, {
+                "glob": "**/*",
+                "input": "src/assets"
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css" 
             ],
-            "scripts": []
+            "scripts": [
+            "node_modules/apexcharts/dist/apexcharts.min.js"
+          ]
           },
           "configurations": {
             "production": {
@@ -80,7 +93,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
@@ -88,6 +102,9 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              }, {
+                "glob": "**/*",
+                "input": "src/assets"
               }
             ],
             "styles": [
