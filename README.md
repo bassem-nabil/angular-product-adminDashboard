@@ -3,7 +3,6 @@
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
 ```bash
 npm install -g json-server@0.17.4 for json-server
-ng serve
 ```
 
 ```bash
