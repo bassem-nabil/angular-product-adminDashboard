@@ -14,7 +14,7 @@ json-server --watch db.json --port 3000
 To start a local development server, run:
 ```bash
 
-npm insatll --f
+npm install --f
 ```
 ```bash
 
